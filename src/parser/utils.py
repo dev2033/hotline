@@ -230,32 +230,31 @@ def get_detail_ua(driver):
     return main_specs
 
 
-def _download_image(category: str, subcategory: str, urls: list):
+def _download_image(category: str, subcategory: str, url):
     """ Скачивает изображения
     """
     index = 1
-    filenames = list()
     path = f"media/{category}/{subcategory}"
-    for url in urls:
-        if len(os.listdir(path)) > 900:
-            index += 1
-            path = path.strip(str(index - 1)) + str(index)
-            os.mkdir(path)
-        filename = path + f"/{uuid4()}.jpg"
-        urlretrieve(
-            url=url,
-            filename=filename
-        )
-        filenames.append(filename)
+    if len(os.listdir(path)) > 900:
+        index += 1
+        path = path.strip(str(index - 1)) + str(index)
+        os.mkdir(path)
+    filename = path + f"/{uuid4()}.jpg"
+    urlretrieve(
+        url=url,
+        filename=filename
+    )
 
-    return filenames
+    return filename
+
+
+filenames = list()
 
 
 def get_images(driver, category: str, subcategory: str) -> list:
     """ Собирает ссылки на изображения конкретного товара и скачивает их
     """
     image_urls = list()
-    list_filename_image = list()
 
     driver.execute_script("scrollBy(0,-500);")
     _images = driver.find_elements_by_class_name(
@@ -263,38 +262,39 @@ def get_images(driver, category: str, subcategory: str) -> list:
     )
 
     for img in _images:
-        ActionChains(driver).move_to_element(img).perform()
-        sleep()
-        img_link = driver.find_element_by_class_name(
-            "zoom-gallery__canvas-img"
-        )
-        _url = img_link.get_attribute("src")
-        image_urls.append(_url)
+        try:
+            ActionChains(driver).move_to_element(img).perform()
+            sleep()
+            img_link = driver.find_element_by_class_name(
+                "zoom-gallery__canvas-img"
+            )
+            _url = img_link.get_attribute("src")
+            image_urls.append(_url)
 
-    filenames = _download_image(
-        category=category,
-        urls=image_urls,
-        subcategory=subcategory
-    )
-    print(filenames)
-    # list_filename_image.append(filenames)
+            filename = _download_image(
+                category=category,
+                url=_url,
+                subcategory=subcategory
+            )
+            filenames.append(filename)
+        except Exception as e:
+            print(e)
+            continue
 
     logger.debug("Все изображения скачаны")
     return filenames
 
 
-def get_images_invalid(driver, category: str, subcategory: str) -> list:
+def get_images_invalid(driver, category: str, subcategory: str):
     """ Забирает изображение с товара, там где оно одно
     """
     driver.execute_script("scrollBy(0,-500);")
     image = driver.find_element_by_class_name("zoom-gallery__canvas-img")
 
     _url = image.get_attribute("src")
-    urls = list()
-    urls.append(_url)
     filename = _download_image(
         category=category,
-        urls=urls,
+        url=_url,
         subcategory=subcategory
     )
 
