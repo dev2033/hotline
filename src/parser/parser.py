@@ -62,7 +62,9 @@ def get_detail_specs_ua(
                             category=input_category,
                             subcategory=subcategory_img
                         )
-                    except Exception:
+                        print(image_list)
+                    except Exception as e:
+                        print(e)
                         image_list = get_images_invalid(
                             driver=driver,
                             category=input_category,

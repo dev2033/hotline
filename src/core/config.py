@@ -1,6 +1,6 @@
 
 # webdriver settings
-HEADLESS_MODE: bool = True
+HEADLESS_MODE: bool = False
 
 
 proxies = [
