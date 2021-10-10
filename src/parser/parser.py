@@ -77,7 +77,7 @@ def get_detail_specs_ua(
                     title = driver.find_element_by_class_name("title__main").text
                     vendor_code = ""
                     if "(" in title:
-                        vendor_code = title.split()[-1].strip("(").strip(")")
+                        vendor_code = title.split("(")[-1].strip(")")
                     try:
                         description = driver.find_element_by_class_name(
                             "cropper-text"
