@@ -267,6 +267,7 @@ def get_images(driver, category: str, subcategory: str) -> list:
             "zoom-gallery__canvas-img"
         )
         _url = img_link.get_attribute("src")
+        print(_url)
         image_urls.append(_url)
 
     image_list = _download_image(
