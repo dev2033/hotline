@@ -1,106 +1,81 @@
 import json
-import os
-from urllib.request import urlretrieve
-from uuid import uuid4
+import time
 
-from selenium.webdriver import ActionChains
+from seleniumwire import webdriver
 
-from core.logger import logger
-from core.utils import sleep, checking_category_for_proxy, \
-    get_web_driver_options
+from itertools import cycle
+
+from core.config import HEADLESS_MODE
 
 
-def _download_image(category: str, subcategory: str, url):
-    """ Скачивает изображения
-    """
-    index = 1
-    path = f"media/{category}/{subcategory}"
-    if len(os.listdir(path)) > 900:
-        index += 1
-        path = path.strip(str(index - 1)) + str(index)
-        os.mkdir(path)
-    filename = path + f"/{uuid4()}.jpg"
-    urlretrieve(
-        url=url,
-        filename=filename
+def get_driver(_options):
+    options = webdriver.FirefoxOptions()
+    options.set_preference(
+        "general.useragent.override",
+        "Mozilla/5.0 (X11; Linux x86_64; rv:92.0) Gecko/20100101 Firefox/92.0"
     )
+    options.set_preference("dom.webdriver.enabled", False)
+    options.headless = False
 
-    return filename
-
-
-filenames = list()
-
-
-def get_images(driver, category: str, subcategory: str) -> list:
-    """ Собирает ссылки на изображения конкретного товара и скачивает их
-    """
-    image_urls = list()
-
-    driver.execute_script("scrollBy(0,-500);")
-    _images = driver.find_elements_by_class_name(
-        "zoom-gallery__nav-item--image"
+    profile = webdriver.FirefoxProfile()
+    profile.set_preference('dom.webdriver.enabled', False)
+    driver = webdriver.Firefox(
+        executable_path="webdriver/geckodriver",
+        options=options,
+        firefox_profile=profile,
+        seleniumwire_options=_options,
     )
-
-    for img in _images:
-        try:
-            ActionChains(driver).move_to_element(img).perform()
-            sleep()
-            img_link = driver.find_element_by_class_name(
-                "zoom-gallery__canvas-img"
-            )
-            _url = img_link.get_attribute("src")
-            image_urls.append(_url)
-
-            filename = _download_image(
-                category=category,
-                url=_url,
-                subcategory=subcategory
-            )
-            filenames.append(filename)
-        except Exception as e:
-            print(e)
-            continue
-
-    logger.debug("Все изображения скачаны")
-    return filenames
+    return driver
 
 
-def get_images_invalid(driver, category: str, subcategory: str):
-    """ Забирает изображение с товара, там где оно одно
-    """
-    driver.execute_script("scrollBy(0,-500);")
-    image = driver.find_element_by_class_name("zoom-gallery__canvas-img")
-
-    _url = image.get_attribute("src")
-    filename = _download_image(
-        category=category,
-        url=_url,
-        subcategory=subcategory
-    )
-
-    logger.debug("Все изображения скачаны")
-    return filename
+def get_proxy():
+    return [
+        {'proxy': {
+            'http': 'http://2cS0DX:KxmqBV@193.32.153.27:8000',
+            'https': 'https://2cS0DX:KxmqBV@193.32.153.27:8000',
+        }},
+        {'proxy': {
+                'http': 'http://kKVvLB:VBAk1a@176.107.182.181:60702',
+                'https': 'https://kKVvLB:VBAk1a@176.107.182.181:60702',
+            }},
+        {'proxy': {
+                'http': 'http://madcros:Z9x0KzI@194.38.22.186:65233',
+                'https': 'https://madcros:Z9x0KzI@194.38.22.186:65233',
+            }},
+        {'proxy': {
+                'http': 'http://madcros:Z9x0KzI@176.114.8.234:65233',
+                'https': 'https://madcros:Z9x0KzI@176.114.8.234:65233',
+            }},
+    ]
 
 
 def main():
+    with open(
+            f"results/product_urls/computer/videokarty.json",
+            "r",
+            encoding='utf-8'
+    ) as file:
+        urls = json.load(file)
+        proxies = get_proxy()
+        for url in urls:
+            for i in range(0, len(proxies)):
+                try:
+                    print("Proxy selected: {}".format(proxies[i]))
+                    options = webdriver.ChromeOptions()
+                    options.add_argument(
+                        '--proxy-server={}'.format(proxies[i]))
+                    driver = webdriver.Chrome(options=options,
+                                              executable_path=r'C:\WebDrivers\chromedriver.exe')
+                    driver.get(
+                        "https://www.whatismyip.com/proxy-check/?iref=home")
+                    if "Proxy Type" in WebDriverWait(driver, 5).until(
+                            EC.visibility_of_element_located(
+                                    (By.CSS_SELECTOR, "p.card-text"))):
+                        break
+                except Exception:
+                    driver.quit()
+            print("Proxy Invoked")
 
-    _options = checking_category_for_proxy("videokarty")
-    driver = get_web_driver_options(_options)
-
-    try:
-
-        driver.get("https://hotline.ua/computer-videokarty/msi-geforce-rtx-3060-gaming-x-12g/?tab=about")
-        image_list = get_images(driver=driver, category="computer", subcategory="videokarty")
-        print(image_list)
-        with open("results/detail/data.json", "a", encoding="utf-8") as file:
-            json.dump(image_list, file, indent=4, ensure_ascii=False)
-            logger.debug("JSON файл заполнен")
-
-    except Exception as e:
-        pass
-
-    finally:
-        driver.quit()
 
 
 if __name__ == '__main__':

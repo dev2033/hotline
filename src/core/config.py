@@ -1,7 +1,5 @@
-
 # webdriver settings
 HEADLESS_MODE: bool = False
-
 
 proxies = [
     {
@@ -166,7 +164,6 @@ proxies = [
     }
 ]
 
-
 components_urls = [
     "https://hotline.ua/computer/processory/",
     "https://hotline.ua/computer/videokarty/",
@@ -210,3 +207,32 @@ components_urls = [
     "https://hotline.ua/computer/myshi-klaviatury/1364/"
 ]
 
+
+def get_proxy():
+    proxies_list = [
+        {
+            'proxy': {
+                'http': 'http://2cS0DX:KxmqBV@193.32.153.27:8000',
+                'https': 'https://2cS0DX:KxmqBV@193.32.153.27:8000',
+            }
+        },
+        {
+            'proxy': {
+                'http': 'http://kKVvLB:VBAk1a@176.107.182.181:60702',
+                'https': 'https://kKVvLB:VBAk1a@176.107.182.181:60702',
+            }
+        },
+        {
+            'proxy': {
+                'http': 'http://madcros:Z9x0KzI@194.38.22.186:65233',
+                'https': 'https://madcros:Z9x0KzI@194.38.22.186:65233',
+            }
+        },
+        {
+            'proxy': {
+                'http': 'http://madcros:Z9x0KzI@176.114.8.234:65233',
+                'https': 'https://madcros:Z9x0KzI@176.114.8.234:65233',
+            }
+        }
+    ]
+    return proxies_list

@@ -42,7 +42,6 @@ def get_detail_specs_ua(
             for url in urls:
                 try:
                     driver.get(url + "?tab=about")
-                    driver.proxy.update()
                     logger.info("Перешел на страницу")
 
                     if rus_lang:

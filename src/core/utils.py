@@ -133,6 +133,7 @@ def checking_category_for_proxy(subcategory: str) -> dict:
                 'https': 'https://madcros:Z9x0KzI@194.38.22.186:65233',
             }
         }
+        """asdsadsadasd"""
     elif subcategory == "karty-podpiski-onlajn-servisov":
         _options = {
             'proxy': {
