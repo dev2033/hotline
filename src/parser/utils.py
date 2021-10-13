@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 from selenium.webdriver import ActionChains
 from seleniumwire import webdriver
 
-from core.config import proxies
+from core.config import proxies, MAX_IMAGE_COUNT
 from core.logger import logger
 from core.utils import (
     sleep,
@@ -230,27 +230,6 @@ def get_detail_ua(driver):
     return main_specs
 
 
-# def _download_image(category: str, subcategory: str, url):
-#     """ Скачивает изображения
-#     """
-#
-#     # index = 1
-#     path = f"media/{category}/{subcategory}"
-#     # print(path)
-#     # if len(os.listdir(path)) >= 3:
-#     #     index += 1
-#     #     path = path.strip(str(index - 1)) + str(index)
-#     #     if not os.path.exists(path):
-#     #         os.mkdir(path)
-#     filename = path + f"/{uuid4()}.jpg"
-#     urlretrieve(
-#         url=url,
-#         filename=filename,
-#     )
-#
-#     return filename
-
-
 def _download_image(category: str, subcategory: str, urls: list):
     """ Скачивает изображения
     """
@@ -268,13 +247,15 @@ def _download_image(category: str, subcategory: str, urls: list):
                 c = a[1]
                 li.append(int(c))
         index = max(li)
+        path = path + f"_{index}"
 
     for url in urls:
-        print(path)
-        if len(os.listdir(path)) >= 5:
+
+        if len(os.listdir(path)) >= MAX_IMAGE_COUNT:
             index += 1
             path = path.strip(f"_{index - 1}") + str(f"_{index}")
-            os.mkdir(path)
+            if not os.path.exists(path):
+                os.mkdir(path)
 
         filename = path + f"/{uuid4()}.jpg"
 

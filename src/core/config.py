@@ -1,6 +1,8 @@
 # webdriver settings
 HEADLESS_MODE: bool = False
 
+MAX_IMAGE_COUNT = 900
+
 proxies = [
     {
         'http': 'http://2cS0DX:KxmqBV@193.32.153.27:8000',
