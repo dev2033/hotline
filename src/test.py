@@ -58,30 +58,33 @@ def get_proxy():
 filenames = []
 
 
-def main():
-    urls = [
-        "https://hotline.ua/computer-processory/amd-ryzen-7-5800x-100-100000063wof/",
-        "https://hotline.ua/computer-processory/amd-ryzen-5-5600x-100-100000065box/"
-    ]
-    _options = checking_category_for_proxy("videokarty")
-    driver = get_web_driver_options(_options)
-    try:
-        for url in urls:
-            driver.get(url + "?tab=about")
+def main(category, subcategory):
+    """ Скачивает изображения
+    """
+    li = []
+    index = 1
+    path = f"media/{category}/{subcategory}"
 
-            nav_list = driver.find_element_by_class_name("zoom-gallery__nav-list")
-            if nav_list.is_displayed():
-                print("NAV exists")
-            else:
-                print("NAV not exists")
+    list_dir = os.listdir(f"media/{category}")
+    if len(list_dir) > 1:
+        for d in list_dir:
+            a = d.split("_")
+            if len(a) > 1:
+                c = a[1]
+                li.append(int(c))
+        index = max(li)
 
+    for i in range(50):
+        with open(f"{path}/file{i}", "w") as file:
+            file.write("qwe")
 
-    except Exception as e:
-        print(e)
+        if len(os.listdir(path)) >= 5:
+            index += 1
+            path = path.strip(f"_{index - 1}") + str(f"_{index}")
+            if not os.path.exists(path):
+                os.mkdir(path)
 
-    finally:
-        driver.quit()
 
 
 if __name__ == '__main__':
-    main()
+    main("computer", "videokarty")

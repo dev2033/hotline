@@ -254,15 +254,30 @@ def get_detail_ua(driver):
 def _download_image(category: str, subcategory: str, urls: list):
     """ Скачивает изображения
     """
-    index = 1
+
     file_name_list = list()
+    li = []
+    index = 1
     path = f"media/{category}/{subcategory}"
+
+    list_dir = os.listdir(f"media/{category}")
+    if len(list_dir) > 1:
+        for d in list_dir:
+            a = d.split("_")
+            if len(a) > 1:
+                c = a[1]
+                li.append(int(c))
+        index = max(li)
+
     for url in urls:
-        if len(os.listdir(path)) > 900:
+        print(path)
+        if len(os.listdir(path)) >= 5:
             index += 1
-            path = path.strip(str(index - 1)) + str(index)
+            path = path.strip(f"_{index - 1}") + str(f"_{index}")
             os.mkdir(path)
+
         filename = path + f"/{uuid4()}.jpg"
+
         urlretrieve(
             url=url,
             filename=filename
