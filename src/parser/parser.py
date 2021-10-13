@@ -55,23 +55,25 @@ def get_detail_specs_ua(
                             logger.info("Переключил на русский язык")
 
                     # Загружает изображения -------------------------
-                    try:
+                    nav_list = driver.find_element_by_class_name("zoom-gallery__nav-list")
+                    if nav_list.is_displayed():
                         image_list = get_images(
                             driver=driver,
                             category=input_category,
                             subcategory=subcategory_img
                         )
-
-                    except TypeError:
-                        pass
-                    except Exception as e:
+                    else:
                         image_list = get_images_invalid(
                             driver=driver,
                             category=input_category,
                             subcategory=subcategory_img
                         )
+
+
                     time.sleep(2)
                     # -----------------------------------------------
+
+                    print(image_list)
 
                     driver.find_elements_by_class_name(
                         "header__switcher-item"
@@ -140,7 +142,10 @@ def get_detail_specs_ua(
                             }
                         }
                     data.append(cpu_object)
+                    print(cpu_object)
                     logger.success(f"JSON сформирован. Объектов - {index}")
+
+
                     index += 1
 
                     time.sleep(7 if index % 10 != 0 else 60*1)
@@ -148,8 +153,11 @@ def get_detail_specs_ua(
                     logger.error(e)
                     continue
 
+                    # image_list.clear()
+
     except Exception as e:
         logger.error(e)
+        driver.quit()
 
     finally:
         driver.quit()

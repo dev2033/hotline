@@ -230,22 +230,46 @@ def get_detail_ua(driver):
     return main_specs
 
 
-def _download_image(category: str, subcategory: str, url):
+# def _download_image(category: str, subcategory: str, url):
+#     """ Скачивает изображения
+#     """
+#
+#     # index = 1
+#     path = f"media/{category}/{subcategory}"
+#     # print(path)
+#     # if len(os.listdir(path)) >= 3:
+#     #     index += 1
+#     #     path = path.strip(str(index - 1)) + str(index)
+#     #     if not os.path.exists(path):
+#     #         os.mkdir(path)
+#     filename = path + f"/{uuid4()}.jpg"
+#     urlretrieve(
+#         url=url,
+#         filename=filename,
+#     )
+#
+#     return filename
+
+
+def _download_image(category: str, subcategory: str, urls: list):
     """ Скачивает изображения
     """
     index = 1
+    file_name_list = list()
     path = f"media/{category}/{subcategory}"
-    if len(os.listdir(path)) > 900:
-        index += 1
-        path = path.strip(str(index - 1)) + str(index)
-        os.mkdir(path)
-    filename = path + f"/{uuid4()}.jpg"
-    urlretrieve(
-        url=url,
-        filename=filename
-    )
+    for url in urls:
+        if len(os.listdir(path)) > 900:
+            index += 1
+            path = path.strip(str(index - 1)) + str(index)
+            os.mkdir(path)
+        filename = path + f"/{uuid4()}.jpg"
+        urlretrieve(
+            url=url,
+            filename=filename
+        )
+        file_name_list.append(filename)
 
-    return filename
+    return file_name_list
 
 
 filenames = list()
@@ -254,8 +278,7 @@ filenames = list()
 def get_images(driver, category: str, subcategory: str) -> list:
     """ Собирает ссылки на изображения конкретного товара и скачивает их
     """
-    image_urls = list()
-
+    urls = list()
     driver.execute_script("scrollBy(0,-500);")
     _images = driver.find_elements_by_class_name(
         "zoom-gallery__nav-item--image"
@@ -269,20 +292,20 @@ def get_images(driver, category: str, subcategory: str) -> list:
                 "zoom-gallery__canvas-img"
             )
             _url = img_link.get_attribute("src")
-            image_urls.append(_url)
-
-            filename = _download_image(
-                category=category,
-                url=_url,
-                subcategory=subcategory
-            )
-            filenames.append(filename)
+            urls.append(_url)
+            sleep()
         except Exception as e:
-            print(e)
             continue
 
+    image_list = _download_image(
+        category=category,
+        urls=urls,
+        subcategory=subcategory
+    )
+
+
     logger.debug("Все изображения скачаны")
-    return filenames
+    return image_list
 
 
 def get_images_invalid(driver, category: str, subcategory: str):
@@ -294,7 +317,7 @@ def get_images_invalid(driver, category: str, subcategory: str):
     _url = image.get_attribute("src")
     filename = _download_image(
         category=category,
-        url=_url,
+        urls=[_url],
         subcategory=subcategory
     )
 

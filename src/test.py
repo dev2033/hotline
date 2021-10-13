@@ -1,11 +1,18 @@
 import json
+import os
 import time
+from uuid import uuid4
 
+from selenium.webdriver import ActionChains
 from seleniumwire import webdriver
 
 from itertools import cycle
 
+from core import logger
 from core.config import HEADLESS_MODE
+from core.utils import sleep, checking_category_for_proxy, \
+    get_web_driver_options, check_media_folders
+from parser.utils import _download_image
 
 
 def get_driver(_options):
@@ -48,34 +55,32 @@ def get_proxy():
             }},
     ]
 
+filenames = []
+
 
 def main():
-    with open(
-            f"results/product_urls/computer/videokarty.json",
-            "r",
-            encoding='utf-8'
-    ) as file:
-        urls = json.load(file)
-        proxies = get_proxy()
+    urls = [
+        "https://hotline.ua/computer-processory/amd-ryzen-7-5800x-100-100000063wof/",
+        "https://hotline.ua/computer-processory/amd-ryzen-5-5600x-100-100000065box/"
+    ]
+    _options = checking_category_for_proxy("videokarty")
+    driver = get_web_driver_options(_options)
+    try:
         for url in urls:
-            for i in range(0, len(proxies)):
-                try:
-                    print("Proxy selected: {}".format(proxies[i]))
-                    options = webdriver.ChromeOptions()
-                    options.add_argument(
-                        '--proxy-server={}'.format(proxies[i]))
-                    driver = webdriver.Chrome(options=options,
-                                              executable_path=r'C:\WebDrivers\chromedriver.exe')
-                    driver.get(
-                        "https://www.whatismyip.com/proxy-check/?iref=home")
-                    if "Proxy Type" in WebDriverWait(driver, 5).until(
-                            EC.visibility_of_element_located(
-                                    (By.CSS_SELECTOR, "p.card-text"))):
-                        break
-                except Exception:
-                    driver.quit()
-            print("Proxy Invoked")
+            driver.get(url + "?tab=about")
 
+            nav_list = driver.find_element_by_class_name("zoom-gallery__nav-list")
+            if nav_list.is_displayed():
+                print("NAV exists")
+            else:
+                print("NAV not exists")
+
+
+    except Exception as e:
+        print(e)
+
+    finally:
+        driver.quit()
 
 
 if __name__ == '__main__':
