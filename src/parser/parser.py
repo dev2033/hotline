@@ -3,6 +3,7 @@ import time
 
 from seleniumwire import webdriver
 
+from core.config import PAUSE
 from core.logger import logger
 from parser.utils import (
     get_detail_ua,
@@ -145,15 +146,16 @@ def get_detail_specs_ua(
                     print(cpu_object)
                     logger.success(f"JSON сформирован. Объектов - {index}")
 
-
                     index += 1
+                    if index == 400:
+                        # driver.set_page_load_timeout(3600 * PAUSE)
+                        time.sleep(3600 * PAUSE)
 
                     time.sleep(7 if index % 10 != 0 else 60*1)
+
                 except Exception as e:
                     logger.error(e)
                     continue
-
-                    # image_list.clear()
 
     except Exception as e:
         logger.error(e)
