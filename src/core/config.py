@@ -1,7 +1,7 @@
 # webdriver settings
 HEADLESS_MODE: bool = False
-PAUSE = 2
 
+PAUSE = 2
 MAX_IMAGE_COUNT = 900
 
 proxies = [

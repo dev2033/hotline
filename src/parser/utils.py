@@ -146,7 +146,7 @@ def get_links(category_url: str):
             f"Парсится категория - {category} | в файл - {file_name}.json"
         )
 
-        for i in range(3):
+        for i in range(1000):
             if i == 0:
                 link = category_url
             else:
@@ -179,7 +179,7 @@ def get_links(category_url: str):
                 if i == pagination:
                     break
                 logger.info(f"Страниц спаршено - {i}")
-            except IndexError as e:
+            except Exception as e:
                 logger.error(e)
                 continue
             time.sleep(random.randrange(3, 6))
@@ -298,8 +298,6 @@ def get_images(driver, category: str, subcategory: str) -> list:
         urls=urls,
         subcategory=subcategory
     )
-
-
     logger.debug("Все изображения скачаны")
     return image_list
 
