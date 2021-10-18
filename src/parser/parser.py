@@ -1,6 +1,7 @@
 import json
 import time
 
+from selenium.common.exceptions import NoSuchElementException
 from seleniumwire import webdriver
 
 from core.config import PAUSE
@@ -56,6 +57,10 @@ def get_detail_specs_ua(
                             lang_classes[0].click()
                             logger.info("Переключил на русский язык")
 
+                    invalid = driver.find_element_by_class_name(
+                        "busy"
+                    ).get_attribute("src")
+
                     # Загружает изображения -------------------------
                     nav_list = driver.find_element_by_class_name("zoom-gallery__nav-list")
                     if nav_list.is_displayed():
@@ -71,6 +76,7 @@ def get_detail_specs_ua(
                             subcategory=subcategory_img
                         )
                     time.sleep(2)
+
                     # -----------------------------------------------
 
                     driver.find_elements_by_class_name(
@@ -162,9 +168,10 @@ def get_detail_specs_ua(
         driver.quit()
 
     finally:
-        with open("results/invalid_urls/invalid_urls.txt", "w") as file:
-            for item in invalid_urls:
-                file.write(item + "\n")
+        with open("results/invalid_urls/invalid_urls.json", "w") as file:
+            json.dump(invalid_urls, file, indent=4, ensure_ascii=False)
+            logger.success(f"Собрано ссылок с ошибкой: {len(invalid_urls)}")
+
         driver.quit()
 
     return data
