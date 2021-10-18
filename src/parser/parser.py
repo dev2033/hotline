@@ -14,6 +14,7 @@ from core.utils import check_media_folders
 
 
 data = list()
+invalid_urls = list()
 
 
 def get_detail_specs_ua(
@@ -69,12 +70,8 @@ def get_detail_specs_ua(
                             category=input_category,
                             subcategory=subcategory_img
                         )
-
-
                     time.sleep(2)
                     # -----------------------------------------------
-
-                    print(image_list)
 
                     driver.find_elements_by_class_name(
                         "header__switcher-item"
@@ -119,7 +116,8 @@ def get_detail_specs_ua(
 
                     main_specs = get_detail_ua(driver)
                     if rus_lang:
-                        cpu_object = {
+                        data_objects = {
+                            "url": url,
                             "vendor_code": vendor_code,
                             "title": title,
                             "description": description,
@@ -131,7 +129,8 @@ def get_detail_specs_ua(
                             }
                         }
                     else:
-                        cpu_object = {
+                        data_objects = {
+                            "url": url,
                             "vendor_code": vendor_code,
                             "title": title,
                             "description": description,
@@ -142,8 +141,8 @@ def get_detail_specs_ua(
                                 "детальні": detail_specs
                             }
                         }
-                    data.append(cpu_object)
-                    print(cpu_object)
+                    data.append(data_objects)
+
                     logger.success(f"JSON сформирован. Объектов - {index}")
 
                     index += 1
@@ -155,6 +154,7 @@ def get_detail_specs_ua(
 
                 except Exception as e:
                     logger.error(e)
+                    invalid_urls.append(url)
                     continue
 
     except Exception as e:
@@ -162,6 +162,9 @@ def get_detail_specs_ua(
         driver.quit()
 
     finally:
+        with open("results/invalid_urls/invalid_urls.txt", "w") as file:
+            for item in invalid_urls:
+                file.write(item + "\n")
         driver.quit()
 
     return data
