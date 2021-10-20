@@ -77,8 +77,9 @@ def formatter_json_file():
         try:
             with open(path_to_file, "r", encoding="utf-8") as file:
                 data = json.loads(file.read())
-                for i in range(len(data)):
+                for i, v in enumerate(data):
                     try:
+                        data[i].pop("url")
                         detail = \
                             data[i].get("Характеристики").get("детальні") or \
                             data[i].get("Характеристики").get("детальные")
@@ -106,6 +107,15 @@ def formatter_json_file():
 
             logger.success(f"Файл сохранен: /{path_to_out_filename}")
             break
+
+
+def check_product_name(product_name: str):
+    """ Проверяет название продукта, чтобы начать парсинг
+    """
+    for index, value in enumerate(components_urls):
+        _index = index + 1
+        if _index == int(product_name):
+            return value
 
 
 def checking_category_for_proxy(subcategory: str) -> dict:
@@ -395,12 +405,3 @@ def checking_category_for_proxy(subcategory: str) -> dict:
         }
 
     return _options
-
-
-def check_product_name(product_name: str):
-    """ Проверяет название продукта, чтобы начать парсинг
-    """
-    for index, value in enumerate(components_urls):
-        _index = index + 1
-        if _index == int(product_name):
-            return value

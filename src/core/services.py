@@ -34,13 +34,13 @@ def input_data_in_parser():
     os.system("clear")
     os.system("echo '|-_-_---| Парсер hotline.ua (author - ToDD) |---_-_-|'")
 
-    _options = checking_category_for_proxy(subcategory_img)
-    driver = get_web_driver_options(_options)
-    logger.success(f"Proxy server: {driver.proxy}")
+    # _options = checking_category_for_proxy(subcategory_img)
+    # driver = get_web_driver_options(_options)
+    # logger.success(f"Proxy server: {driver.proxy}")
     start_time = time.monotonic()
     logger.debug("Начал парсинг")
     product_data = get_detail_specs_ua(
-        driver=driver,
+        # driver=driver,
         input_category=input_category,
         input_file_name=input_file_name,
         subcategory_img=subcategory_img,
@@ -70,7 +70,6 @@ def input_data_in_parser():
 
 
 def input_data_for_get_links():
-    print(products_name)
     url = check_product_name(input("hotline --> $ "))
     start_time = time.monotonic()
     result, category, file_name = get_links(url)

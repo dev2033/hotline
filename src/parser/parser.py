@@ -1,25 +1,25 @@
 import json
+import random
 import time
 
 from selenium.common.exceptions import NoSuchElementException
 from seleniumwire import webdriver
 
-from core.config import PAUSE
+from core.config import PAUSE, get_proxy_for_selenium
 from core.logger import logger
 from parser.utils import (
     get_detail_ua,
     get_images,
     get_images_invalid
 )
-from core.utils import check_media_folders
-
+from core.utils import check_media_folders, get_web_driver_options
 
 data = list()
 invalid_urls = list()
 
 
 def get_detail_specs_ua(
-        driver: webdriver.Firefox,
+        # driver: webdriver.Firefox,
         input_category: str,
         input_file_name: str,
         subcategory_img: str,
@@ -41,12 +41,25 @@ def get_detail_specs_ua(
             index = 1
             urls = json.load(file)
             manufacturer_link = ""
+            count_object = 1
 
             for url in urls:
-                try:
-                    driver.get(url + "?tab=about")
-                    logger.info("Перешел на страницу")
+                for proxy in random.sample(get_proxy_for_selenium(), len(get_proxy_for_selenium())):
+                    try:
+                        driver = get_web_driver_options(proxy)
+                        driver.get(url + "?tab=about")
+                        time.sleep(1)
+                        driver.find_element_by_class_name("header-logo")
+                        time.sleep(1)
+                        break
+                    except Exception:
+                        logger.warning("Ошибка с прокси! Меняю прокси-сервер!")
+                        driver.close()
+                        continue
 
+                try:
+                    logger.info("Перешел на страницу")
+                    logger.info(f"Proxy: {driver.proxy}")
                     if rus_lang:
                         lang_classes = driver.find_elements_by_class_name(
                             "lang__link")[:2]
@@ -56,10 +69,6 @@ def get_detail_specs_ua(
                         else:
                             lang_classes[0].click()
                             logger.info("Переключил на русский язык")
-
-                    invalid = driver.find_element_by_class_name(
-                        "busy"
-                    ).get_attribute("src")
 
                     # Загружает изображения -------------------------
                     nav_list = driver.find_element_by_class_name("zoom-gallery__nav-list")
@@ -158,17 +167,27 @@ def get_detail_specs_ua(
 
                     time.sleep(7 if index % 10 != 0 else 60*1)
 
+                except NoSuchElementException:
+                    invalid_urls.append(url)
+                    logger.error("Ошибка с изображением или бан IP!")
+
                 except Exception as e:
-                    logger.error(e)
+                    logger.error(f"Другая ошибка!\n{e}")
+                    # logger.error(e)
                     invalid_urls.append(url)
                     continue
+
+                count_object += 1
+                if count_object == len(urls):
+                    break
+                driver.close()
 
     except Exception as e:
         logger.error(e)
         driver.quit()
 
     finally:
-        with open("results/invalid_urls/invalid_urls.json", "w") as file:
+        with open(f"results/invalid_urls/{subcategory_img}_invalid_urls", "w") as file:
             json.dump(invalid_urls, file, indent=4, ensure_ascii=False)
             logger.success(f"Собрано ссылок с ошибкой: {len(invalid_urls)}")
 
