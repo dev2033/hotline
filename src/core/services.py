@@ -3,9 +3,7 @@ import os
 import time
 
 from core.logger import logger
-from core.strings import products_name
-from core.utils import checking_category_for_proxy, get_web_driver_options, \
-    check_product_name
+from core.utils import check_product_name
 from parser.parser import get_detail_specs_ua
 from parser.utils import get_links
 
@@ -70,7 +68,9 @@ def input_data_in_parser():
 
 
 def input_data_for_get_links():
-    url = check_product_name(input("hotline --> $ "))
+    url = check_product_name(input(
+        " hotline --> $ "
+    ))
     start_time = time.monotonic()
     result, category, file_name = get_links(url)
 

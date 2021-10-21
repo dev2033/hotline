@@ -1,10 +1,11 @@
 # webdriver settings
-HEADLESS_MODE: bool = True
+HEADLESS_MODE: bool = False
 
 # в часах
 PAUSE = 2
 
-MAX_IMAGE_COUNT = 900
+# кол-во изображений в определенную дирректорию
+MAX_IMAGE_COUNT = 2
 
 # прокси для библиотеки requests
 proxies = [

@@ -17,7 +17,6 @@ from core.utils import (
     check_is_file,
 )
 
-
 headers = {
     "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:92.0) "
                   "Gecko/20100101 Firefox/92.0"
@@ -59,7 +58,8 @@ def get_urls_keyboards_and_mouse(file_name: str, product: str):
 
     try:
         check_is_file("kompyuternaya-periferiya", file_name)
-        logger.info(f"Парсится продукт - {product} | в файл - {file_name}.json")
+        logger.info(
+            f"Парсится продукт - {product} | в файл - {file_name}.json")
 
         for i in range(1000):
             if i == 0:
@@ -122,7 +122,8 @@ def get_urls_keyboards_and_mouse(file_name: str, product: str):
                 encoding="utf-8"
         ) as file:
             json.dump(data, file, indent=4, ensure_ascii=False)
-            logger.success(f"Данные по категории kompyuternaya-periferiya записаны!")
+            logger.success(
+                f"Данные по категории kompyuternaya-periferiya записаны!")
 
         logger.success("Готово")
 
@@ -208,7 +209,8 @@ def get_detail_ua(driver):
             "header__switcher-item"
         )[0].click()
         logger.info("Перешел на основные характеристики")
-        _table_spec = driver.find_element_by_class_name("specifications__table")
+        _table_spec = driver.find_element_by_class_name(
+            "specifications__table")
         _tags = _table_spec.find_elements_by_tag_name("tr")
 
         for tag in _tags[:-1]:
@@ -237,9 +239,10 @@ def _download_image(category: str, subcategory: str, urls: list):
     file_name_list = list()
     li = []
     index = 1
-    path = f"media/{category}/{subcategory}"
+    path = f"media/{category}/{subcategory}/{subcategory}"
 
-    list_dir = os.listdir(f"media/{category}")
+    list_dir = os.listdir(f"media/{category}/{subcategory}")
+
     if len(list_dir) > 1:
         for d in list_dir:
             a = d.split("_")

@@ -49,10 +49,12 @@ def get_detail_specs_ua(
                         driver = get_web_driver_options(proxy)
                         driver.get(url + "?tab=about")
                         time.sleep(1)
-                        driver.find_element_by_class_name("header-logo")
+                        driver.find_element_by_class_name("header__title")
                         time.sleep(1)
                         break
-                    except Exception:
+                    except Exception as e:
+                        logger.critical(proxy)
+                        print(e)
                         logger.warning("Ошибка с прокси! Меняю прокси-сервер!")
                         driver.close()
                         continue
@@ -172,6 +174,7 @@ def get_detail_specs_ua(
                     logger.error("Ошибка с изображением или бан IP!")
 
                 except Exception as e:
+                    print(e)
                     logger.error(f"Другая ошибка!\n{e}")
                     # logger.error(e)
                     invalid_urls.append(url)

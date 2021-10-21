@@ -17,11 +17,13 @@ def sleep() -> None:
 def check_media_folders(input_category: str, subcategory_img: str):
     """ Проверяет, ли дирректории в проекте
     """
-    if not os.path.exists(f"media/{input_category}"):
-        os.mkdir(f"media/{input_category}")
+    if not os.path.exists(f"media/{input_category}") or \
+            not os.path.exists(f"media/{input_category}/{subcategory_img}"):
+        # os.mkdir(f"media/{input_category}")
+        os.makedirs(f"media/{input_category}/{subcategory_img}/{subcategory_img}")
 
-    if not os.path.exists(f"media/{input_category}/{subcategory_img}"):
-        os.mkdir(f"media/{input_category}/{subcategory_img}")
+    # if not os.path.exists(f"media/{input_category}/{subcategory_img}"):
+    #     os.mkdir(f"media/{input_category}/{subcategory_img}")
 
 
 def check_is_file(category: str, file_name: str):
