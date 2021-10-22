@@ -5,7 +5,7 @@ HEADLESS_MODE: bool = False
 PAUSE = 2
 
 # кол-во изображений в определенную дирректорию
-MAX_IMAGE_COUNT = 2
+MAX_IMAGE_COUNT = 900
 
 # прокси для библиотеки requests
 proxies = [

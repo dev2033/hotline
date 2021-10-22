@@ -56,7 +56,7 @@ def get_detail_specs_ua(
                         logger.critical(proxy)
                         print(e)
                         logger.warning("Ошибка с прокси! Меняю прокси-сервер!")
-                        driver.close()
+                        driver.quit()
                         continue
 
                 try:
