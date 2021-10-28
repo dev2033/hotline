@@ -5,7 +5,7 @@ import json
 
 from seleniumwire import webdriver
 
-from core.config import HEADLESS_MODE, components_urls
+from core.config import HEADLESS_MODE, PAUSE, components_urls
 from core.logger import logger
 
 
@@ -64,6 +64,7 @@ def get_web_driver_options(_options: dict) -> any:
         seleniumwire_options=_options,
         firefox_profile=profile
     )
+    driver.set_page_load_timeout(3600 * PAUSE * 2)
     return driver
 
 

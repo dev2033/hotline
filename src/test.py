@@ -1,9 +1,5 @@
-from parser.utils import _download_image
-
-url = "https://hotline.ua//img/tx/299/2990769355.jpg"
-
-_download_image(
-    category="computer",
-    subcategory="zvukovye-karty",
-    urls=[url]
-)
+index = 1
+for i in range(1500):
+    index += 1
+    if index % 200 == 0:
+        print(index)
