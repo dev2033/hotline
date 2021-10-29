@@ -4,7 +4,8 @@ import time
 
 from selenium.common.exceptions import NoSuchElementException
 
-from core.config import PAUSE, get_proxy_for_selenium, STOP, START
+from core.config import PAUSE, get_proxy_for_selenium, STOP, START, \
+    COUNT_PRODUCT_SLEEP
 from core.logger import logger
 from parser.utils import (
     get_detail_ua,
@@ -165,8 +166,8 @@ def get_detail_specs_ua(
                 logger.success(f"JSON сформирован. Объектов - {index}")
 
                 index += 1
-                if index % 200 == 0:
-                    # driver.set_page_load_timeout(3600 * PAUSE)
+
+                if index % COUNT_PRODUCT_SLEEP == 0:
                     time.sleep(3600 * PAUSE)
 
                 time.sleep(7 if index % 10 != 0 else 60*1)
