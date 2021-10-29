@@ -68,6 +68,26 @@ def get_web_driver_options(_options: dict) -> any:
     return driver
 
 
+def get_web_driver_chrome_options(_options: dict) -> any:
+    """Возвращает опции веб драйвера для браузера Chrome"""
+    options = webdriver.ChromeOptions()
+    options.add_argument(
+        "user-agent=Mozilla/5.0 (X11; Ubuntu; "
+        "Linux x86_64; rv:84.0) Gecko/20100101 Firefox/84.0"
+    )
+    options.add_argument("--disable-blink-features=AutomationControlled")
+    options.headless = HEADLESS_MODE
+
+    driver = webdriver.Chrome(
+        executable_path="webdriver/chromedriver",
+        options=options,
+        seleniumwire_options=_options
+    )
+    driver.set_page_load_timeout(3600 * PAUSE * 2)
+
+    return driver
+
+
 def formatter_json_file():
     """ Форматирует файлы json
     """

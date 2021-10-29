@@ -3,16 +3,19 @@ import random
 import time
 
 from selenium.common.exceptions import NoSuchElementException
-from seleniumwire import webdriver
 
-from core.config import PAUSE, get_proxy_for_selenium
+from core.config import PAUSE, get_proxy_for_selenium, STOP, START
 from core.logger import logger
 from parser.utils import (
     get_detail_ua,
     get_images,
     get_images_invalid
 )
-from core.utils import check_media_folders, get_web_driver_options
+from core.utils import (
+    check_media_folders,
+    get_web_driver_options,
+    get_web_driver_chrome_options
+)
 
 data = list()
 invalid_urls = list()
@@ -43,11 +46,11 @@ def get_detail_specs_ua(
             manufacturer_link = ""
             count_object = 1
 
-        for url in urls:
+        for url in urls[START:STOP]:
             # rotation proxy
             for proxy in random.sample(get_proxy_for_selenium(), len(get_proxy_for_selenium())):
                 try:
-                    driver = get_web_driver_options(proxy)
+                    driver = get_web_driver_chrome_options(proxy)
                     driver.get(url + "?tab=about")
                     driver.find_element_by_class_name("header__title")
                     break

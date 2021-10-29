@@ -31,8 +31,6 @@
 
 <p>Если возникает ошибка с webdriver, нужно скачать geckodriver и положить его в папку `webdriver`.
 Сам webdriver нужен нужной версии для вашего FireFox</p>
-
-<br>
 <br>
 
 <h3>Паузы:</h3>
@@ -58,3 +56,6 @@
          time.sleep(random.randrange(3, 6))
     ```
    Эта пауза нужна для сбора ссылок на товары, у которых нет цвета
+
+
+Скачать chromedriver: *https://chromedriver.storage.googleapis.com/index.html*
