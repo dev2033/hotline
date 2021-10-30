@@ -69,7 +69,7 @@ def input_data_in_parser():
 
 def input_data_for_get_links():
     url = check_product_name(input(
-        " hotline --> $ "
+        "Введите номер товара\nhotline --> $ "
     ))
     start_time = time.monotonic()
     result, category, file_name = get_links(url)
