@@ -4,6 +4,8 @@ import time
 import json
 
 from seleniumwire import webdriver
+from selenium_stealth import stealth
+
 
 from core.config import HEADLESS_MODE, PAUSE, components_urls
 from core.logger import logger
@@ -19,11 +21,7 @@ def check_media_folders(input_category: str, subcategory_img: str):
     """
     if not os.path.exists(f"media/{input_category}") or \
             not os.path.exists(f"media/{input_category}/{subcategory_img}"):
-        # os.mkdir(f"media/{input_category}")
         os.makedirs(f"media/{input_category}/{subcategory_img}/{subcategory_img}")
-
-    # if not os.path.exists(f"media/{input_category}/{subcategory_img}"):
-    #     os.mkdir(f"media/{input_category}/{subcategory_img}")
 
 
 def check_is_file(category: str, file_name: str):
@@ -71,6 +69,14 @@ def get_web_driver_options(_options: dict) -> any:
 def get_web_driver_chrome_options(_options: dict) -> any:
     """Возвращает опции веб драйвера для браузера Chrome"""
     options = webdriver.ChromeOptions()
+    options.add_argument("--max-gum-fps")
+    options.add_argument("--enable-usermedia-screen-capturing")
+    options.add_argument("--enable-audio-debug-recordings-from-extension")
+    options.add_argument("--agc-startup-min-volume")
+    options.add_argument("--alsa-input-device")
+    options.add_argument("--alsa-input-device")
+    options.add_experimental_option("excludeSwitches", ["enable-automation"])
+    options.add_experimental_option('useAutomationExtension', False)
     options.add_argument(
         "user-agent=Mozilla/5.0 (X11; Ubuntu; "
         "Linux x86_64; rv:84.0) Gecko/20100101 Firefox/84.0"
@@ -83,6 +89,16 @@ def get_web_driver_chrome_options(_options: dict) -> any:
         options=options,
         seleniumwire_options=_options
     )
+
+    stealth(driver,
+        languages=["en-US", "en"],
+        vendor="Google Inc.",
+        platform="Win32",
+        webgl_vendor="Intel Inc.",
+        renderer="Intel Iris OpenGL Engine",
+        fix_hairline=True,
+    )
+
     driver.set_page_load_timeout(3600 * PAUSE * 2)
 
     return driver
